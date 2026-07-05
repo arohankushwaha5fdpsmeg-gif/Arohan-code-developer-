@@ -1,12 +1,1 @@
-<!DOCTYPE html><html><head><title>CodeX Gateway</title><meta charset='UTF-8'><style>
-body{font-family:sans-serif;background:#030407;position:relative;color:#fff;max-width:350px;margin:150px auto;padding:15px;height:100vh;overflow:hidden;}
-body::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 30%,rgba(0,242,254,0.18) 0%,transparent 50%),radial-gradient(circle at 70% 70%,rgba(255,0,122,0.15) 0%,transparent 50%);z-index:-1;animation:spin 20s linear infinite;}
-@keyframes spin{100%{transform:rotate(360deg);}}
-.c{background:rgba(14,16,22,0.6);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);padding:30px;border-radius:14px;border:1px solid rgba(0,242,254,0.2);box-shadow:0 20px 50px rgba(0,242,254,0.15);}
-h2{text-align:center;background:linear-gradient(135deg,#00f2fe,#ff007a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:0;font-size:22px;letter-spacing:0.5px;}
-input{width:100%;padding:13px;margin:8px 0;background:rgba(5,6,10,0.8);color:#fff;border:1px solid rgba(255,255,255,0.08);border-radius:8px;box-sizing:border-box;outline:none;font-size:14px;}
-input:focus{border-color:#00f2fe;box-shadow:0 0 10px rgba(0,242,254,0.2);}
-button{width:100%;padding:13px;background:linear-gradient(135deg,#00f2fe,#7928ca);border:none;font-weight:bold;color:#000;border-radius:8px;cursor:pointer;margin-top:12px;font-size:14px;}
-button:hover{opacity:0.95;box-shadow:0 0 15px rgba(0,242,254,0.4);}
-a{color:#00f2fe;text-decoration:none;display:block;text-align:center;margin-top:18px;font-size:13px;opacity:0.8;}
-</style></head><body><div class='c'><h2>CodeX Gate {{t}}</h2>{%with m=get_flashed_messages()%}{%if m%}{%for msg in m%}<p style='color:#ff007a;text-align:center;font-size:12px;margin:0 0 10px 0;'>{{msg}}</p>{%endfor%}{%endif%}{%endwith%}<form method='POST'><input type='text' name='u' placeholder='Account Identifier' required><input type='password' name='p' placeholder='Secret Access Key' required><button type='submit'>Authenticate Identity</button></form>{%if t=='Login'%}<a href='/register'>Register New Credentials</a>{%else%}<a href='/login'>Return to Gate Login</a>{%endif%}</div></body></html>
+
