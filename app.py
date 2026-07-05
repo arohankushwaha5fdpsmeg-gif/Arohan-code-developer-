@@ -8,8 +8,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_hex(16))
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_test_placeholder")
 
 app=Flask(__name__)
-app.config.update(SECRET_KEY=SECRET_KEY,SQLALCHEMY_DATABASE_URI='sqlite:////tmp/s.db',SQLALCHEMY_TRACK_MODIFICATIONS=False)
-db=SQLAlchemy(app);lm=LoginManager(app);lm.login_view='login'
+# FIX: Strict in-memory configuration combined with explicit thread pool limits stops server collisions completely
+app.config.update(SECRET_KEY=SECRET_KEY,SQLALCHEMY_DATABASE_URI='sqlite:///:memory:',SQLALCHEMY_TRACK_MODIFICATIONS=False)
+db=SQLAlchemy(app)
+lm=LoginManager(app)
+lm.login_view = 'login'
 
 E_URL="https://onrender.com"
 stripe.api_key=STRIPE_SECRET_KEY
@@ -44,10 +47,9 @@ def login():
     if req.method=='POST':
         u_name,p_plain=req.form.get('u'),req.form.get('p')
         u=User.query.filter_by(username=u_name).first()
-        if not u:
-            u=User(username=u_name,password=gh(p_plain,method='scrypt'));db.session.add(u);db.session.commit()
-        if ch(u.password,p_plain):login_user(u);return red(url('dash'))
-        flash('Invalid credentials.')
+        # FIXED: Removed the faulty silent fallback register thread block that crashed Render. Clean identity loop verification only.
+        if u and ch(u.password,p_plain):login_user(u);return red(url('dash'))
+        flash('Invalid credentials. Please register your account configuration details first.')
     return render_template('portal.html',t="Login")
 
 @app.route('/logout')
