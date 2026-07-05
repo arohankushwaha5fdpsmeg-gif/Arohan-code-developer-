@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeX Gateway</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #050609;
+            background-image: radial-gradient(circle at 20% 30%, rgba(0, 242, 254, 0.15) 0%, transparent 40%),
+                              radial-gradient(circle at 80% 70%, rgba(255, 0, 122, 0.12) 0%, transparent 45%);
+            background-attachment: fixed;
+            color: #fff;
+            max-width: 360px;
+            margin: 140px auto;
+            padding: 15px;
+        }
+        .card {
+            background: rgba(14, 16, 21, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.65);
+        }
+        h2 {
+            text-align: center;
+            background: linear-gradient(135deg, #00f2fe, #ff007a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 24px 0;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            background: rgba(6, 7, 10, 0.7);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            font-size: 0.95rem;
+        }
+        input:focus {
+            border-color: #00f2fe;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00f2fe, #7928ca);
+            border: none;
+            font-weight: bold;
+            color: #000;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 0.95rem;
+        }
+        a {
+            color: #00f2fe;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        a:hover { opacity: 1; }
+        .flash {
+            color: #ff007a;
+            text-align: center;
+            font-size: 0.85rem;
+            margin: 0 0 14px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>CodeX Gate {{ t }}</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <p class="flash">{{ msg }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="u" placeholder="Account Identifier" required>
+            <input type="password" name="p" placeholder="Secret Access Key" required>
+            <button type="submit">Authenticate Identity</button>
+        </form>
+        {% if t == 'Login' %}
+            <a href="/register">Register New Credentials</a>
+        {% else %}
+            <a href="/login">Return to Gate Login</a>
+        {% endif %}
+    </div>
+</body>
+</html>
