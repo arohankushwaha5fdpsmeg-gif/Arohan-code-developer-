@@ -21,7 +21,7 @@ pre{flex:1;margin:0;background:rgba(2,3,6,0.95);padding:18px;color:#a7f3d0;overf
 </style></head><body><div class="c-b"></div><header><div class='logo'>CODEX TERMINAL</div>
 <div style='display:flex;align-items:center;gap:16px;'><div style='font-size:13px;'>OPERATOR: <b style="color:var(--pink);">{{current_user.username.upper()}}</b></div><a href='/logout' class='lo'>EXIT</a></div></header>
 <div class='w'><div class="p-h"><div style="font-size:12px;font-weight:700;color:var(--neon);border-bottom:1px solid rgba(0,242,254,0.3);padding-bottom:5px;">{%if current_user.username.lower()=='admin'%}📡 SYSTEM LOGS{%else%}💾 ACCESS LOGS{%endif%}</div><div class="h-l" id="hList">
-{%for i in history%}<!-- Structural template history cards --><div class="h-c" data-p="{{i.prompt_text}}" onclick="document.getElementById('p').value=this.getAttribute('data-p')">{%if current_user.username.lower()=='admin'%}<b style="color:var(--pink);">[{{i.username}}]</b>: {%endif%}{{i.prompt_text}}</div>{%endfor%}</div></div>
+{%for i in history%}<div class="h-c" data-p="{{i.prompt_text}}" onclick="document.getElementById('p').value=this.getAttribute('data-p')">{%if current_user.username.lower()=='admin'%}<b style="color:var(--pink);">[{{i.username}}]</b>: {%endif%}{{i.prompt_text}}</div>{%endfor%}</div></div>
 <div class='p-l'><textarea id='p' placeholder='// INPUT REQUEST DIRECTIVES...'></textarea><button onclick='g()' id='btn' style='margin-top:12px;'>EXECUTE COMPILER ⚡</button></div>
 <div class='p-r'><pre id='o'># Core Engine Active... Ready to compile code arrays.</pre><button onclick='cp()' style='margin-top:12px;background:#070913;color:#fff;border:1px solid rgba(255,255,255,0.15);'>EXTRACT CODE 📋</button></div></div>
 <script>
@@ -29,5 +29,5 @@ document.getElementById('p').addEventListener('keydown',function(e){if(e.key==='
 function g(){const p=document.getElementById('p').value;if(!p.trim())return;const o=document.getElementById('o'),btn=document.getElementById('btn');o.innerText="# COMPILING ARCHITECTURE INFRASTRUCTURE...";btn.disabled=true;
 fetch('/gen',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p:p})}).then(res=>res.json()).then(data=>{if(data.c){let f=data.c;if(f.includes("```")){let l=f.split("\n");f=l.filter(x=>!x.trim().startsWith("```")).join("\n");}o.innerText=f;const hList=document.getElementById('hList'),card=document.createElement('div');card.className='h-c';card.setAttribute('data-p',data.prompt);card.onclick=function(){document.getElementById('p').value=this.getAttribute('data-p');};
 if("{{current_user.username.lower()}}"==="admin"){card.innerHTML=`<b style="color:var(--pink);">[${data.username}]</b>: ${data.prompt}`;}else{card.innerText=data.prompt;}hList.insertBefore(card,hList.firstChild);document.getElementById('p').value="";}}).catch(e=>{o.innerText="# ROUTE TIMEOUT.";}).finally(()=>{btn.disabled=false;});}
-function cp(){navigator.clipboard.writeText(document.getElementById('o').innerText).then(()=>{alert('Copied!');});}
+function cp(){navigator.clipboard.writeText(document.getElementById('o').innerText).then(() => { alert('Copied!'); });}
 </script></body></html>
