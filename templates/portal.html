@@ -1,11 +1,126 @@
-<!DOCTYPE html><html><head><title>Portal</title><meta charset='UTF-8'><style>
-body{font-family:sans-serif;background:#030407;position:relative;color:#fff;max-width:350px;margin:150px auto;padding:15px;height:100vh;overflow:hidden;}
-body::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 30%,rgba(0,242,254,0.18) 0%,transparent 50%),radial-gradient(circle at 70% 70%,rgba(255,0,122,0.15) 0%,transparent 50%);z-index:-1;animation:spin 20s linear infinite;}
-@keyframes spin{100%{transform:rotate(360deg);}}
-.c{background:rgba(14,16,22,0.6);backdrop-filter:blur(30px);padding:30px;border-radius:14px;border:1px solid rgba(0,242,254,0.2);box-shadow:0 20px 50px rgba(0,242,254,0.15);}
-h2{text-align:center;background:linear-gradient(135deg,#00f2fe,#ff007a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:0;}
-input{width:100%;padding:13px;margin:8px 0;background:rgba(5,6,10,0.8);color:#fff;border:1px solid rgba(255,255,255,0.08);border-radius:8px;outline:none;}
-button{width:100%;padding:13px;background:linear-gradient(135deg,#00f2fe,#7928ca);border:none;font-weight:bold;border-radius:8px;cursor:pointer;margin-top:12px;}
-a{color:#00f2fe;text-decoration:none;display:block;text-align:center;margin-top:18px;font-size:13px;}
-</style></head><body><div class='c'><h2>CodeX {{t}}</h2>{%with m=get_flashed_messages()%}{%if m%}{%for msg in m%}<p style='color:#ff007a;text-align:center;font-size:12px;'>{{msg}}</p>{%endfor%}{%endif%}{%endwith%}<form method='POST'><input type='text' name='u' placeholder='Identifier' required><input type='password' name='p' placeholder='Access Key' required><button type='submit'>Verify</button></form>{%if t=='Login'%}<a href='/register'>Register</a>{%else%}<a href='/login'>Login</a>{%endif%}</div></body></html>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CodeX - Gateway</title>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>
+        :root {
+            --neon: #00f2fe;
+            --pink: #ff007a;
+            --purple: #7928ca;
+            --glass: rgba(10, 15, 30, 0.7);
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #020308;
+            color: #fff;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .city-grid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                linear-gradient(rgba(0,0,0,0.3) 0%, rgba(2,3,8,1) 85%),
+                radial-gradient(circle at 50% 30%, rgba(255, 0, 122, 0.2) 0%, transparent 60%),
+                radial-gradient(circle at 20% 80%, rgba(0, 242, 254, 0.15) 0%, transparent 50%),
+                linear-gradient(transparent 50%, rgba(0, 242, 254, 0.05) 50%),
+                linear-gradient(90deg, transparent 50%, rgba(0, 242, 254, 0.05) 50%);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            z-index: -1;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: top;
+            animation: gridMove 12s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+            100% { background-position: 0 0, 0 0, 0 0, 0 40px, 40px 0; }
+        }
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            padding: 40px;
+            border-radius: 16px;
+            border: 2px solid var(--neon);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.25), inset 0 0 15px rgba(255, 0, 122, 0.1);
+            width: 100%;
+            max-width: 360px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        h2 {
+            text-align: center;
+            background: linear-gradient(135deg, var(--neon), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            font-size: 26px;
+            letter-spacing: 2px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            background: rgba(5, 7, 15, 0.9);
+            color: #fff;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 12px rgba(255,0,122,0.4);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--neon), var(--purple));
+            color: white;
+            border: none;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        a {
+            color: var(--neon);
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="city-grid"></div>
+    <div class='container'>
+        <h2>CODEX // {{t.upper()}}</h2>
+        {% with m=get_flashed_messages() %}
+            {% if m %}
+                {% for msg in m %}
+                    <p style='color:var(--pink); text-align:center; font-size:12px;'>⚡ {{msg}}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method='POST'>
+            <input type='text' name='u' placeholder='// IDENTIFIER' required autocomplete="off">
+            <input type='password' name='p' placeholder='// ACCESS KEY' required>
+            <button type='submit'>INITIALIZE UPLINK 📡</button>
+        </form>
+        {% if t=='Login' %}
+            <a href='/register'>Create Profile</a>
+        {% else %}
+            <a href='/login'>Return to Login Profile</a>
+        {% endif %}
+    </div>
+</body>
+</html>
