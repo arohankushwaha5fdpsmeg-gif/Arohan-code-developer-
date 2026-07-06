@@ -30,4 +30,49 @@ function g(){const p=document.getElementById('p').value;if(!p.trim())return;cons
 fetch('/gen',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p:p})}).then(res=>res.json()).then(data=>{if(data.c){let f=data.c;if(f.includes("```")){let l=f.split("\n");f=l.filter(x=>!x.trim().startsWith("```")).join("\n");}o.innerText=f;const hList=document.getElementById('hList'),card=document.createElement('div');card.className='h-c';card.setAttribute('data-p',data.prompt);card.onclick=function(){document.getElementById('p').value=this.getAttribute('data-p');};
 if("{{current_user.username.lower()}}"==="admin"){card.innerHTML=`<b style="color:var(--pink);">[${data.username}]</b>: ${data.prompt}`;}else{card.innerText=data.prompt;}hList.insertBefore(card,hList.firstChild);document.getElementById('p').value="";}}).catch(e=>{o.innerText="# ROUTE TIMEOUT.";}).finally(()=>{btn.disabled=false;});}
 function cp(){navigator.clipboard.writeText(document.getElementById('o').innerText).then(() => { alert('Copied!'); });}
+<!-- Cybernetic Mainframe Sound Synthesizer Node (Paste at the absolute bottom of index.html) -->
+  </script>
+<script>
+    const oldG = g; // Safely references your original compiler function without breaking it
+    g = function() {
+        try {
+            // Initialize tablet browser audio context matrix
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Channel 1: Deep Mainframe Hum
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(60, audioCtx.currentTime); // 60Hz Cyber Frequency
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // Low volume warning hum
+            
+            // Channel 2: High Frequency Digital Datastream Spike
+            const clickOsc = audioCtx.createOscillator();
+            const clickGain = audioCtx.createGain();
+            clickOsc.type = 'sine';
+            clickOsc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+            clickGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            clickGain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
+
+            // Connect structural sound channels to output nodes
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            clickOsc.connect(clickGain);
+            clickGain.connect(audioCtx.destination);
+
+            // Execute sound sequence triggers
+            oscillator.start();
+            clickOsc.start();
+            
+            // Fade out the computer hum automatically after 1 second
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.0);
+            oscillator.stop(audioCtx.currentTime + 1.0);
+            clickOsc.stop(audioCtx.currentTime + 0.15);
+        } catch(e) {
+            console.log("Audio node initializing waiting for touch interaction.");
+        }
+        oldG(); // Run your original execution logic smoothly
+    };
+
+ 
 </script></body></html>
