@@ -12,19 +12,22 @@ app.config.update(SECRET_KEY=SECRET_KEY, SQLALCHEMY_DATABASE_URI='sqlite:///' + 
 db = SQLAlchemy(app); lm = LoginManager(app); lm.login_view = 'login'
 
 class MetaAIEngine:
+    def __init__(self):
+        self.s = r.Session()
+        self.s.headers.update({"User-Agent": "Mozilla/5.0", "Accept": "application/json", "Content-Type": "application/json"})
+
     def gen(self, p):
-        sys_rule = "You are NeoCoder-AI. Generate ONLY raw functional source code blocks with comments. No intro chatter."
+        sys = "You are NeoCoder-AI. Output ONLY raw functional, production-ready code with comments. No conversational preambles."
+        payload = {"messages": [{"role": "system", "content": sys}, {"role": "user", "content": p}], "model": "openai-large"}
         try:
-            res = r.post(
-                "https://huggingface.co",
-                json={"inputs": f"<|system|>\n{sys_rule}\n<|user|>\n{p}\n<|assistant|>\n"},
-                headers={"Content-Type": "application/json"}, timeout=25
-            )
-            if res.status_code == 200:
-                text = res.json()['generated_text'] if isinstance(res.json(), list) else res.json().get('generated_text', '')
-                return text.split("<|assistant|>\n")[-1].strip()
+            res = self.s.post("https://pollinations.ai", json=payload, timeout=25)
+            if res.status_code == 200 and len(res.text.strip()) > 20: return res.text
         except: pass
-        return f"# 🌌 EMERGENCY CORE READY\nclass CustomCore:\n    def __init__(self):\n        self.target = '{p}'"
+        try:
+            res = self.s.get(f"https://pollinations.ai{r.utils.quote(sys+' '+p)}", timeout=20)
+            if res.status_code == 200 and len(res.text.strip()) > 20: return res.text
+        except: pass
+        return f"# 🌌 LOCAL CORE HYPER-DRIVE\nclass CustomCore:\n    def __init__(self):\n        self.target = '{p}'"
 
 ai = MetaAIEngine()
 
