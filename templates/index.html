@@ -1,24 +1,229 @@
-<!DOCTYPE html><html><head><meta charset='UTF-8'><title>CodeX AI</title><style>
-:root{--bg:#030408;--panel:rgba(10,12,18,0.8);--neon:#00f2fe;--p:#ff007a;--t:#e2e8f0;}
-body{font-family:monospace;background:var(--bg);color:var(--t);margin:0;height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative;}
-body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 30% 20%,rgba(0,242,254,0.12) 0%,transparent 40%),radial-gradient(circle at 70% 80%,rgba(255,0,122,0.08) 0%,transparent 45%);z-index:-1;animation:pulse 8s infinite alternate;}
-@keyframes pulse{0%{opacity:0.7;}100%{opacity:1;}}
-header{background:var(--panel);backdrop-filter:blur(20px);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;}
-.b{font-weight:700;font-size:16px;background:linear-gradient(135deg,var(--neon),var(--p));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.w{display:flex;flex:1;height:calc(100vh - 55px);}.l,.r{flex:1;display:flex;flex-direction:column;padding:15px;box-sizing:border-box;}
-textarea{flex:1;padding:15px;background:rgba(5,6,10,0.85);color:#34d399;border:1px solid rgba(0,242,254,0.15);border-radius:8px;outline:none;font-family:inherit;}
-button{padding:12px;background:linear-gradient(135deg,var(--neon),#7928ca);border:none;font-weight:700;border-radius:6px;cursor:pointer;}
-pre{flex:1;margin:0;background:rgba(3,4,6,0.9);padding:15px;color:#a7f3d0;overflow:auto;border-radius:6px;white-space:pre-wrap;border:1px solid rgba(255,255,255,0.03);}
-.lo{color:#ef4444;text-decoration:none;font-size:12px;padding:4px 8px;background:rgba(239,68,68,0.05);border-radius:4px;}
-</style></head><body><header><div class='b'>CodeX Terminal 🌌</div><div style='display:flex;align-items:center;gap:12px;'><div style='font-size:12px;'>User: <b>{{current_user.username}}</b> | Quota: <span style='color:var(--neon);'><span id='tc'>{{current_user.tokens}}</span>/15 Tok</span></div><a href='/logout' class='lo'>Exit</a></div></header>
-<div class='w'><div class='l'><textarea id='p' placeholder='Ask me to generate a "neural network model", "image generator model", or "chatbot script"...'></textarea>
-<button onclick='g()' style='margin-top:10px;'>Execute Meta-Compiler ✨</button></div>
-<div class='r'><pre id='o'># Standby... Ready to build artificial intelligence modules.</pre>
-<button onclick='cp()' style='margin-top:10px;background:#111;color:#fff;'>Copy Code Matrix 📋</button></div></div>
-<script>
-document.getElementById('p').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();g();}});
-function g(){const p=document.getElementById('p').value;if(!p.trim())return;const o=document.getElementById('o');o.innerText="# Initiating Meta-AI compilation scripts...\\n# Assembling deep learning parameters...";
-fetch('/gen',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p:p})}).then(r=>r.json()).then(d=>{if(d.c){o.innerText=d.c;const s=document.getElementById('tc');if(s)s.innerText=d.r;}});}
-function cp(){navigator.clipboard.writeText(document.getElementById('o').innerText);alert('AI Code Block Copied!');}
-</script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>CodeX Mainframe Terminal</title>
+    <style>
+        :root {
+            --bg: #04060e;
+            --panel: rgba(11, 14, 26, 0.75);
+            --neon: #00f2fe;
+            --pink: #ff007a;
+            --purple: #7928ca;
+            --text: #e2e8f0;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        .grid-backdrop {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                linear-gradient(rgba(4,6,14,0.4) 0%, var(--bg) 90%),
+                radial-gradient(circle at 50% 20%, rgba(0, 242, 254, 0.15) 0%, transparent 55%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 122, 0.12) 0%, transparent 50%),
+                linear-gradient(rgba(0, 242, 254, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 254, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+            z-index: -2;
+        }
+        .grid-backdrop::before {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            background: linear-gradient(transparent 0%, rgba(255,0,122,0.05) 50%, transparent 100%);
+            animation: scanningLines 6s linear infinite;
+            z-index: -1;
+        }
+        @keyframes scanningLines {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        header {
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(0, 242, 254, 0.3);
+        }
+        .logo {
+            font-weight: 900;
+            font-size: 19px;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--neon), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .workspace {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+            padding: 15px;
+            gap: 15px;
+            box-sizing: border-box;
+        }
+        .panel-left, .panel-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--panel);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        textarea {
+            flex: 1;
+            padding: 18px;
+            background: rgba(3, 4, 8, 0.85);
+            color: #34d399;
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: none;
+        }
+        button {
+            padding: 15px;
+            background: linear-gradient(135deg, var(--neon), var(--purple));
+            color: white;
+            border: none;
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #222533 !important;
+            color: #666 !important;
+            cursor: not-allowed;
+        }
+        pre {
+            flex: 1;
+            margin: 0;
+            background: rgba(2, 3, 6, 0.9);
+            padding: 18px;
+            color: #a7f3d0;
+            overflow: auto;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .logout-btn {
+            color: #fff;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, var(--pink), #b91c1c);
+            border-radius: 6px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-backdrop"></div>
+    
+    <header>
+        <div class='logo'>CODEX // CYBER-CORE TERMINAL 🌌</div>
+        <div style='display:flex; align-items:center; gap:16px;'>
+            <div style='font-size:13px;'>
+                OPERATOR: <b style="color:var(--pink);">{{current_user.username.upper()}}</b> | 
+                QUOTA: <span style='color:var(--neon); font-weight: bold;'><span id='tc'>{{current_user.tokens}}</span> / 15 FREQ</span>
+            </div>
+            <a href='/logout' class='logout-btn'>DISCONNECT</a>
+        </div>
+    </header>
+    
+    <div class='workspace'>
+        <div class='panel-left'>
+            <textarea id='p' placeholder='// INPUT REQUEST CRITERIA...&#13;&#10;// e.g., "Build an interactive standard matrix calculator using Tkinter GUI"'></textarea>
+            <button onclick='g()' id='btn' style='margin-top:12px;'>EXECUTE META-COMPILER INTEGRATION ⚡</button>
+        </div>
+        <div class='panel-right'>
+            <pre id='o'># Core Engine Active... Ready to stream assets.</pre>
+            <button onclick='cp()' style='margin-top:12px; background:#070913; color:#fff; border:1px solid rgba(255,255,255,0.15);'>EXTRACT CODE MATRIX 📋</button>
+        </div>
+    </div>
 
+    <script>
+        document.getElementById('p').addEventListener('keydown', function(e) {
+            if(e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                g();
+            }
+        });
+
+        function g() {
+            const p = document.getElementById('p').value;
+            if(!p.trim()) return;
+            
+            const o = document.getElementById('o');
+            const btn = document.getElementById('btn');
+            
+            o.innerText = "# INITIATING METAPROGRAMMING COMPILATION PIPELINE...\n# TUNING QUANTUM ARRAY OVERRIDES...\n# PROCESSING REQUEST INTERFACE DATA ARRAYS...";
+            btn.disabled = true;
+            btn.innerText = "COMPILING CHIP COGNITION INFRASTRUCTURE... ⚡";
+
+            fetch('/gen', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({p: p})
+            })
+            .then(res => {
+                if(res.status === 402) {
+                    alert("Daily operational cycles exhausted.");
+                    throw new Error("Quota Empty");
+                }
+                return res.json();
+            })
+            .then(data => {
+                if(data.c) {
+                    let formattedCode = data.c;
+                    if(formattedCode.startsWith('"""') && formattedCode.endsWith('"""')) {
+                        formattedCode = formattedCode.slice(3, -3);
+                    }
+                    formattedCode = formattedCode.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+                    o.innerText = formattedCode;
+                    
+                    const tokenElement = document.getElementById('tc');
+                    if(tokenElement) tokenElement.innerText = data.r;
+                    
+                    document.getElementById('p').value = "";
+                }
+            })
+            .catch(err => {
+                if(err.message !== "Quota Empty") {
+                    o.innerText = "# CRITICAL LINK ERROR: Connection dropped.";
+                }
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "EXECUTE META-COMPILER INTEGRATION ⚡";
+            });
+        }
+
+        function cp() {
+            const codeText = document.getElementById('o').innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                alert('Structural System Matrix Transferred to Clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
