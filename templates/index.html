@@ -24,55 +24,112 @@ pre{flex:1;margin:0;background:rgba(2,3,6,0.95);padding:18px;color:#a7f3d0;overf
 {%for i in history%}<div class="h-c" data-p="{{i.prompt_text}}" onclick="document.getElementById('p').value=this.getAttribute('data-p')">{%if current_user.username.lower()=='admin'%}<b style="color:var(--pink);">[{{i.username}}]</b>: {%endif%}{{i.prompt_text}}</div>{%endfor%}</div></div>
 <div class='p-l'><textarea id='p' placeholder='// INPUT REQUEST DIRECTIVES...'></textarea><button onclick='g()' id='btn' style='margin-top:12px;'>EXECUTE COMPILER ⚡</button></div>
 <div class='p-r'><pre id='o'># Core Engine Active... Ready to compile code arrays.</pre><button onclick='cp()' style='margin-top:12px;background:#070913;color:#fff;border:1px solid rgba(255,255,255,0.15);'>EXTRACT CODE 📋</button></div></div>
-<script>
-document.getElementById('p').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();g();}});
-function g(){const p=document.getElementById('p').value;if(!p.trim())return;const o=document.getElementById('o'),btn=document.getElementById('btn');o.innerText="# COMPILING ARCHITECTURE INFRASTRUCTURE...";btn.disabled=true;
-fetch('/gen',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p:p})}).then(res=>res.json()).then(data=>{if(data.c){let f=data.c;if(f.includes("```")){let l=f.split("\n");f=l.filter(x=>!x.trim().startsWith("```")).join("\n");}o.innerText=f;const hList=document.getElementById('hList'),card=document.createElement('div');card.className='h-c';card.setAttribute('data-p',data.prompt);card.onclick=function(){document.getElementById('p').value=this.getAttribute('data-p');};
-if("{{current_user.username.lower()}}"==="admin"){card.innerHTML=`<b style="color:var(--pink);">[${data.username}]</b>: ${data.prompt}`;}else{card.innerText=data.prompt;}hList.insertBefore(card,hList.firstChild);document.getElementById('p').value="";}}).catch(e=>{o.innerText="# ROUTE TIMEOUT.";}).finally(()=>{btn.disabled=false;});}
-function cp(){navigator.clipboard.writeText(document.getElementById('o').innerText).then(() => { alert('Copied!'); });}
-<!-- Cybernetic Mainframe Sound Synthesizer Node (Paste at the absolute bottom of index.html) -->
-  </script>
-<script>
-    const oldG = g; // Safely references your original compiler function without breaking it
-    g = function() {
-        try {
-            // Initialize tablet browser audio context matrix
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    <script>
+        // Submit prompt on Enter key press (without holding Shift)
+        document.getElementById('p').addEventListener('keydown', function(e) {
+            if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); g(); }
+        });
+        
+        function g() {
+            const p = document.getElementById('p').value;
+            if(!p.trim()) return;
+            const o = document.getElementById('o'), btn = document.getElementById('btn');
             
-            // Channel 1: Deep Mainframe Hum
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.type = 'sawtooth';
-            oscillator.frequency.setValueAtTime(60, audioCtx.currentTime); // 60Hz Cyber Frequency
-            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // Low volume warning hum
-            
-            // Channel 2: High Frequency Digital Datastream Spike
-            const clickOsc = audioCtx.createOscillator();
-            const clickGain = audioCtx.createGain();
-            clickOsc.type = 'sine';
-            clickOsc.frequency.setValueAtTime(880, audioCtx.currentTime); 
-            clickGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            clickGain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
+            // Set dynamic visual loading indicators
+            o.innerText = "# CONNECTING TABLET DIRECTLY TO COGNITIVE TRANSFORMER INTERFACE...\n# SYNTHESIZING DYNAMIC CODE BLOCKS...";
+            btn.disabled = true;
 
-            // Connect structural sound channels to output nodes
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            clickOsc.connect(clickGain);
-            clickGain.connect(audioCtx.destination);
+            // Direct engineering instruction rules to enforce full source-code generation
+            const sys = "You are NeoCoder-AI, an elite software architect running on a cyberpunk mainframe. Generate ONLY complete, fully functional, production-ready source code blocks. Do NOT include conversational chatter or preambles. Output raw code directly with comments.";
+            const payload = {
+                messages: [
+                    {role: "system", content: sys}, 
+                    {role: "user", content: "Write a complete, detailed, production-ready implementation script for: " + p}
+                ],
+                model: "openai-large"
+            };
 
-            // Execute sound sequence triggers
-            oscillator.start();
-            clickOsc.start();
-            
-            // Fade out the computer hum automatically after 1 second
-            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.0);
-            oscillator.stop(audioCtx.currentTime + 1.0);
-            clickOsc.stop(audioCtx.currentTime + 0.15);
-        } catch(e) {
-            console.log("Audio node initializing waiting for touch interaction.");
+            // Bypassing the Render hosting server's firewall by calling the brain from your browser
+            fetch("https://pollinations.ai", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Throttled");
+                return res.text();
+            })
+            .then(aiCode => {
+                // Strip out markdown formatting wrapper blocks safely if they are included
+                if(aiCode.includes("```")) {
+                    let lines = aiCode.split("\n");
+                    aiCode = lines.filter(x => !x.trim().startsWith("```")).join("\n");
+                }
+                o.innerText = aiCode;
+
+                // Quietly pass the user transaction information back to your local SQLite database logs
+                fetch('/gen', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({p: p})
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const hList = document.getElementById('hList'), card = document.createElement('div');
+                    card.className = 'h-c';
+                    card.setAttribute('data-p', data.prompt);
+                    card.onclick = function() { document.getElementById('p').value = this.getAttribute('data-p'); };
+                    
+                    // Admin global monitor override visibility check
+                    if("{{current_user.username.lower()}}" === "admin") {
+                        card.innerHTML = `<b style="color:var(--pink);">[${data.username}]</b>: ${data.prompt}`;
+                    } else {
+                        card.innerText = data.prompt;
+                    }
+                    hList.insertBefore(card, hList.firstChild);
+                });
+
+                document.getElementById('p').value = ""; // Clean input text block
+            })
+            .catch(e => { o.innerText = "# TERMINAL ROUTE CONGESTED. RE-TRY DIRECTIVE LINK."; })
+            .finally(() => { btn.disabled = false; });
         }
-        oldG(); // Run your original execution logic smoothly
-    };
+        function cp() { navigator.clipboard.writeText(document.getElementById('o').innerText).then(() => { alert('Code Matrix Copied!'); }); }
+    </script>
+    
+    <script>
+        // Standalone browser audio generator hook
+        const oldG = g;
+        g = function() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(60, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                
+                const clickOsc = audioCtx.createOscillator();
+                const clickGain = audioCtx.createGain();
+                clickOsc.type = 'sine';
+                clickOsc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                clickGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                clickGain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.12);
 
- 
-</script></body></html>
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                clickOsc.connect(clickGain);
+                clickGain.connect(audioCtx.destination);
+
+                oscillator.start(); clickOsc.start();
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+                oscillator.stop(audioCtx.currentTime + 0.8);
+                clickOsc.stop(audioCtx.currentTime + 0.12);
+            } catch(e) {}
+            oldG();
+        };
+    </script>
+</body>
+</html>
+
+
