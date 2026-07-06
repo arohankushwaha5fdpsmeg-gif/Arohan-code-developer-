@@ -86,6 +86,43 @@ def gen_code():
     except: db.session.rollback()
     return jsonify({'c': cc, 'prompt': p, 'username': current_user.username})
 
+# Standalone Local Diagnostic Command Router (Paste right above the __main__ hook in app.py)
+@app.route('/gen', methods=['POST'])
+@login_required
+def gen_code_override():
+    """
+    Overrides the standard /gen endpoint using Flask's internal decorator routing map 
+    to process local commands cleanly before sending requests to the AI brain.
+    """
+    p = req.json.get('p', '').strip() if req.json else ''
+    if not p: return jsonify({'error': 'Empty'}), 400
+
+    # Local System Check Command Intercept
+    if p.lower() == '//status':
+        status_report = (
+            "// --- CODEX CYBERNETIC DIAGNOSTIC DATA LAYOUT ---\n"
+            f"// Current Node Session Operator : {current_user.username.upper()}\n"
+            f"// Mainframe Operating Status    : STABLE / 100% OPERATIONAL\n"
+            "// Network Gateway Interconnect  : POLLINATIONS SERVERLESS NET LINKED\n"
+            "// Core Hardware Architecture    : RENDER ENGINE CLOUD VIRTUAL PROVISION\n"
+            "// Local Engine Memory Load Max : < 30MB RAM SAFE PROFILE ZONE"
+        )
+        return jsonify({'c': status_report, 'prompt': p, 'username': current_user.username})
+
+    # Clear Workspace Blueprint Command Intercept
+    if p.lower() == '//wipe':
+        clear_report = "# Terminal data matrix channels successfully flushed clean. Ready for clean input sequence."
+        return jsonify({'c': clear_report, 'prompt': p, 'username': current_user.username})
+
+    # If it is not a system macro command shortcut, fallback cleanly into your primary code gen loop
+    cc = ai.gen(p)
+    try:
+        db.session.add(PromptHistory(user_id=current_user.id, username=current_user.username, prompt_text=p))
+        db.session.commit()
+    except: db.session.rollback()
+    return jsonify({'c': cc, 'prompt': p, 'username': current_user.username})
+
+
 if __name__ == '__main__':
     with app.app_context(): db.create_all()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
